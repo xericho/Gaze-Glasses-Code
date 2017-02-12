@@ -1,3 +1,3 @@
 # Gaze-Glasses-Code
 
-Run label_images.py using Docker
+source: https://codelabs.developers.google.com/codelabs/tensorflow-for-poets/#4
