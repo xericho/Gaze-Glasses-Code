@@ -14,9 +14,8 @@ python /Gaze-Glasses-Code/label_image.py /Gaze-Glasses-Code/trainertestimage.jpg
 If you only have TensorFlow installed:
 
 1) Change the paths in label_image.py:
-```
-From /Gaze-Glass-Code/label_image.py to label.py
-```
+
+From `/Gaze-Glass-Code/label_image.py` to `label_image.py`
 
 2) Run:
 ```
