@@ -13,7 +13,12 @@ python /Gaze-Glasses-Code/label_image.py /Gaze-Glasses-Code/trainertestimage.jpg
 
 If you only have TensorFlow installed:
 
-Go to the folder and run:
+1) Change the paths in label_image.py:
+```
+From /Gaze-Glass-Code/label_image.py to label.py
+```
+
+2) Run:
 ```
 python label_image.py trainertestimage.jpg [or any other path of image]
 ```
