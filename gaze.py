@@ -1,7 +1,7 @@
 """
 Code for training database
 Need gaze_eval.py
-
+VOC2007devkit: http://host.robots.ox.ac.uk:8080/pascal/VOC/voc2007/#devkit
 
 """
 
@@ -30,10 +30,10 @@ class gaze(imdb):
         self._devkit_path = devkit_path
         self._data_path = os.path.join(self._devkit_path, 'data')
         self._classes = ('__background__', # always index 0
-                         'brain', 'star', 'card1', 'card2',
-                         'shark')
+                         'brain', 'star', 'lunch', 'park',
+                         'shark', 'skeleton', 'frame')
         self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))
-        self._image_ext = ['.jpg', '.png']
+        self._image_ext = '.jpg'
         self._image_index = self._load_image_set_index()
         self._salt = str(uuid.uuid4())
         self._comp_id = 'comp4'
@@ -51,6 +51,7 @@ class gaze(imdb):
         assert os.path.exists(self._data_path), \
                 'Path does not exist: {}'.format(self._data_path)
 
+### FOR GETTING IMAGES
     def image_path_at(self, i):
         """
         Return the absolute path to image i in the image sequence.
@@ -61,15 +62,14 @@ class gaze(imdb):
         """
         Construct an image path from the image's "index" identifier.
         """
-        for ext in self._image_ext:
-            image_path = os.path.join(self._data_path, 'Images',
-                                  index + ext)
-            if os.path.exists(image_path):
-                break
+        image_path = os.path.join(self._data_path, 'Images',
+                                  index + self._image_ext)
         assert os.path.exists(image_path), \
                 'Path does not exist: {}'.format(image_path)
         return image_path
+###
 
+### FOR GETTING IMAGE NAMES
     def _load_image_set_index(self):
         """
         Load the indexes listed in this dataset's image set file.
@@ -83,6 +83,7 @@ class gaze(imdb):
         with open(image_set_file) as f:
             image_index = [x.strip() for x in f.readlines()]
         return image_index
+###
 
 # no get_default_path because we know where exactly everything is
 
@@ -123,6 +124,8 @@ class gaze(imdb):
             box_list = cPickle.load(f)
         return self.create_roidb_from_box_list(box_list, gt_roidb)
 
+
+### FOR GETTING INFO FROM ANNOATIONS
     def _load_gaze_annotation(self, index):
         """
         Load image and bounding boxes info from txt files of INRIAPerson.
@@ -169,6 +172,7 @@ class gaze(imdb):
                 'gt_overlaps' : overlaps,
                 'flipped' : False,
                 'seg_areas' : seg_areas}
+###
 
     def _write_gaze_results_file(self, all_boxes):
         for cls_ind, cls in enumerate(self.classes):
