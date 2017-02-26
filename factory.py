@@ -10,15 +10,16 @@
 __sets = {}
 
 from datasets.inria import inria
-inria_devkit_path = '/home/keming/py-faster-rcnn/data/inria_person_devkit'
+from datasets.gaze import gaze
+gaze_devkit_path = '/home/keming/py-faster-rcnn/data/gaze_devkit'
 from datasets.pascal_voc import pascal_voc
 from datasets.coco import coco
 import numpy as np
 
 # Set up for reading inria images (i think)
 for split in ['train', 'test']:
-	name = '{}_{}'.format('inria', split)
-	__sets[name] = (lambda split=split: inria(split, inria_devkit_path))
+	name = '{}_{}'.format('gaze', split)
+	__sets[name] = (lambda split=split: gaze(split, gaze_devkit_path))
 
 # Set up voc_<year>_<split> using selective search "fast" mode
 for year in ['2007', '2012']:

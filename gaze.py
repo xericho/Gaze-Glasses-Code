@@ -7,8 +7,9 @@ VOC2007devkit: http://host.robots.ox.ac.uk:8080/pascal/VOC/voc2007/#devkit
 
 import os
 import errno
-import datasets.imdb import imdb
+from datasets.imdb import imdb
 import datasets.ds_utils as ds_utils
+
 """ for reading xml files, we use txt so no need
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
@@ -28,7 +29,7 @@ class gaze(imdb):
         imdb.__init__(self, image_set)
         self._image_set = image_set
         self._devkit_path = devkit_path
-        self._data_path = os.path.join(self._devkit_path, 'data')
+        self._data_path = os.path.join(self._devkit_path, 'gaze_data')
         self._classes = ('__background__', # always index 0
                          'brain', 'star', 'lunch', 'park',
                          'shark', 'skeleton', 'frame')
@@ -43,7 +44,7 @@ class gaze(imdb):
                        'use_salt' : True,
                        'top_k'    : 2000,
                        'use_diff' : False,
-                       'rpn_file' : None
+                       'rpn_file' : None,
                        'min_size' : 2}
 
         assert os.path.exists(self._devkit_path), \
@@ -76,6 +77,7 @@ class gaze(imdb):
         """
         # Example path to image set file:
         # self._data_path + /ImageSets/val.txt
+        # self._image_set should be == train
         image_set_file = os.path.join(self._data_path, 'ImageSets',
                                       self._image_set + '.txt')
         assert os.path.exists(image_set_file), \
@@ -92,6 +94,8 @@ class gaze(imdb):
         Return the database of ground-truth regions of interest.
 
         This function loads/saves from/to a cache file to speed up future calls.
+
+        self.name == 'train' should be
         """
         cache_file = os.path.join(self.cache_path, self.name + '_gt_roidb.pkl')
         if os.path.exists(cache_file):
@@ -147,22 +151,25 @@ class gaze(imdb):
         # "Seg" area here is just the box area
         seg_areas = np.zeros((num_objs), dtype=np.float32)
 
+        # get name of object
+        name = index.split('_')[0]
+
         # Load object bounding boxes into a data frame.
         for ix, obj in enumerate(objs):
             # Make pixel indexes 0-based
             coor = re.findall('\d+', obj)
             # parse each coord from obj 
-            x1 = float(coor[0])i
+            x1 = float(coor[0])
             y1 = float(coor[1])
             x2 = float(coor[2])
             y2 = float(coor[3])
             #check which you need
-            cls = self._class_to_ind['person']
-            cls = self._class_to_ind[obj.find('name').text.lower().strip()]
+            #cls = self._class_to_ind['person']
+            #cls = self._class_to_ind[obj.find('name').text.lower().strip()]
             
             boxes[ix, :] = [x1, y1, x2, y2]
-            gt_classes[ix] = cls
-            overlaps[ix, cls] = 1.0
+            gt_classes[ix] = name
+            overlaps[ix, name] = 1.0
             seg_areas[ix] = (x2 - x1 + 1) * (y2 - y1 + 1)
 
         overlaps = scipy.sparse.csr_matrix(overlaps)
