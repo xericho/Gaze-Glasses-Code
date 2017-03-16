@@ -1,0 +1,19 @@
+train_net: "models/gaze_model/faster_rcnn_alt_opt/stage1_fast_rcnn_train.pt"
+
+
+base_lr: 0.001			# begin training at a learning rate of 0.01 = 1e-2
+lr_policy: "step"		# learning rate policy: drop the learning rate in "steps"
+                  		# by a factor of gamma every stepsize iterations
+gamma: 0.1			# drop the learning rate by a factor of 10
+                  		# (i.e., multiply it by a factor of gamma = 0.1)
+stepsize: 15000			# drop the learning rate every 30K iterations
+display: 20
+average_loss: 100
+momentum: 0.9			# mew = 0.9, check caffe website tutorial under solver
+weight_decay: 0.0005
+
+# We disable standard caffe solver snapshotting and implement our own snapshot
+# function
+snapshot: 0
+# We still use the snapshot prefix, though
+snapshot_prefix: "vgg_cnn_m_1024_fast_rcnn"
