@@ -1,8 +1,7 @@
 """
 Code for training database
-Need gaze_eval.py
 VOC2007devkit: http://host.robots.ox.ac.uk:8080/pascal/VOC/voc2007/#devkit
-
+^ for reference
 """
 
 import os
@@ -164,12 +163,12 @@ class gaze(imdb):
             x2 = float(coor[2])
             y2 = float(coor[3])
             #check which you need
-            #cls = self._class_to_ind['person']
+            cls = self._class_to_ind[name]
             #cls = self._class_to_ind[obj.find('name').text.lower().strip()]
             
             boxes[ix, :] = [x1, y1, x2, y2]
-            gt_classes[ix] = name
-            overlaps[ix, name] = 1.0
+            gt_classes[ix] = cls
+            overlaps[ix, cls] = 1.0
             seg_areas[ix] = (x2 - x1 + 1) * (y2 - y1 + 1)
 
         overlaps = scipy.sparse.csr_matrix(overlaps)
